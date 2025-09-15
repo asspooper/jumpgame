@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meme Jump</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #222;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+        canvas {
+            border: 2px solid #fff;
+        }
+        #ad-container {
+            width: 800px;
+            height: 100px;
+            background-color: #333;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 10px 0;
+        }
+        #game-over {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #f00;
+            font-size: 40px;
+            font-family: 'Comic Sans MS', sans-serif;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top Ad Container -->
+    <div id="ad-container">
+        <p>Ad Space - Integrate Google AdSense here</p>
+    </div>
+
+    <!-- Game Canvas will be added by JavaScript -->
+
+    <!-- Bottom Ad Container -->
+    <div id="ad-container">
+        <p>Ad Space - Integrate Google AdSense here</p>
+    </div>
+
+    <script>
+    // MemeJump: An intentionally impossible meme-themed endless runner
+
+// Create ad container (top)
+const adContainerTop = document.createElement('div');
+adContainerTop.id = 'ad-container-top';
+adContainerTop.style.width = '800px';
+adContainerTop.style.height = '100px';
+adContainerTop.style.backgroundColor = '#333';
+adContainerTop.style.color = '#fff';
+adContainerTop.style.display = 'flex';
+adContainerTop.style.justifyContent = 'center';
+adContainerTop.style.alignItems = 'center';
+adContainerTop.style.marginBottom = '10px';
+adContainerTop.innerHTML = '<p>Ad Space - Integrate Google AdSense here</p>';
+document.body.appendChild(adContainerTop);
+
+// Canvas setup
+const canvas = document.createElement('canvas');
+canvas.width = 800;
+canvas.height = 400;
+document.body.style.display = 'flex';
+document.body.style.flexDirection = 'column';
+document.body.style.justifyContent = 'center';
+document.body.style.alignItems = 'center';
+document.body.style.height = '100vh';
+document.body.style.backgroundColor = '#222';
+canvas.style.border = '2px solid #fff';
+document.body.appendChild(canvas);
+const ctx = canvas.getContext('2d');
+
+// Create ad container (bottom)
+const adContainerBottom = document.createElement('div');
+adContainerBottom.id = 'ad-container-bottom';
+adContainerBottom.style.width = '800px';
+adContainerBottom.style.height = '100px';
+adContainerBottom.style.backgroundColor = '#333';
+adContainerBottom.style.color = '#fff';
+adContainerBottom.style.display = 'flex';
+adContainerBottom.style.justifyContent = 'center';
+adContainerBottom.style.alignItems = 'center';
+adContainerBottom.style.marginTop = '10px';
+adContainerBottom.innerHTML = '<p>Ad Space - Integrate Google AdSense here</p>';
+document.body.appendChild(adContainerBottom);
+
+// Player character
+const player = {
+  x: 50,
+  y: 300,
+  width: 60,
+  height: 60,
+  velocityY: 0,
+  jumpHeight: -15,
+  gravity: 1,
+  rotation: 0,
+};
+
+// Obstacle
+const obstacle = { x: 800, y: 300, width: 60, height: 60 };
+let obstacleSpeed = 5;
+
+// Game variables
+let score = 0;
+let gameOver = false;
+
+// Controls
+window.addEventListener('keydown', (e) => {
+  if (e.code === 'Space' && player.y >= 300) {
+    player.velocityY = player.jumpHeight;
+    player.rotation += Math.PI / 2;
+  }
+});
+
+function update() {
+  player.velocityY += player.gravity;
+  player.y += player.velocityY;
+  if (player.y > 300) player.y = 300;
+
+  obstacle.x -= obstacleSpeed;
+  if (obstacle.x < -60) {
+    obstacle.x = 800;
+  }
+
+  if (
+    player.x < obstacle.x + obstacle.width &&
+    player.x + player.width > obstacle.x &&
+    player.y < obstacle.y + obstacle.height &&
+    player.y + player.height > obstacle.y
+  ) {
+    gameOver = true;
+  }
+
+  if (!gameOver) score++;
+}
+
+function draw() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = '#0f0';
+  ctx.save();
+  ctx.translate(player.x + player.width / 2, player.y + player.height / 2);
+  ctx.rotate(player.rotation);
+  ctx.fillRect(-player.width / 2, -player.height / 2, player.width, player.height);
+  ctx.restore();
+
+  ctx.fillStyle = '#ff0';
+  ctx.fillRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
+
+  ctx.fillStyle = '#fff';
+  ctx.font = '20px Comic Sans MS';
+  ctx.fillText('Score: ' + score, 10, 30);
+
+  if (gameOver) {
+    ctx.fillStyle = '#f00';
+    ctx.font = '40px Comic Sans MS';
+    ctx.textAlign = 'center';
+    ctx.fillText('Game Over! Press F5 to restart', canvas.width / 2, canvas.height / 2);
+  }
+}
+
+function gameLoop() {
+  update();
+  draw();
+  if (!gameOver) requestAnimationFrame(gameLoop);
+}
+
+gameLoop();
+
+    </script>
+
+</body>
+</html>
